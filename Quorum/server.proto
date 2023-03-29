@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+
+
+service Server_service{
+
+    rpc WriteServer (clientResponse) returns (serverResponse) {}
+
+    rpc ReadServer (clientResponseRead) returns (serverResponseRead) {}
+
+    rpc DeleteServer (clientResponseDelete) returns (serverResponseDelete) {}
+}
+
+message clientResponse{
+    string uid=1;
+    string filename=2;
+    string content=3;
+}
+
+message serverResponse{
+    string uid=1;
+    string status=2;
+    string version=3;
+}
+
+message clientResponseRead{
+    string uid=1;
+}
+
+message serverResponseRead{
+    string uid=1;
+    string status=2;
+    string version=3;
+    string content=4;
+}
+
+message clientResponseDelete{
+    string uid=1;
+    string work=2;
+}
+
+message serverResponseDelete{
+    string status=1;
+}
+
+
+message Server{
+    string ip =1;
+    string port =2;
+    string name =3;
+}
+

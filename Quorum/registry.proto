@@ -1,0 +1,35 @@
+syntax = "proto3";
+import "server.proto";
+
+service Register{
+    rpc registerServer (registerServerRequest) returns (registerServerResponse) {}
+
+    rpc GetServerList (ClientRequest) returns (ClientResponse) {}
+}
+
+message registerServerResponse{
+    string response =1;
+}
+
+message registerServerRequest{
+    Server server =1;
+}
+
+message ClientRequest{
+    string client=1;
+}
+
+message ClientResponse{
+    repeated Server serverclient =1;
+}
+
+
+message RegistryServer{
+    repeated Server servers=1;
+    int32 N_r = 2;
+    int32 N_w = 3;
+    int32 N = 4;
+}
+
+
+

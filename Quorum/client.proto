@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+message Client{
+    string uid =1;
+    repeated CServer servers=2;
+}
+
+message CServer{
+    string name =1;
+    CAddress address =2;
+}
+
+message CAddress{
+    string ip =1;
+    string port =2;
+}
