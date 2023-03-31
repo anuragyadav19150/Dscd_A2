@@ -43,11 +43,12 @@ class Server(server_pb2_grpc.Server_serviceServicer):
             #         check=True
             #         uid=k
             #         break
-            if not check:
-                return server_pb2.serverResponse(status='FAILED: FILENAME IS WRONG ',version="",uid="")
+            if not check and len(data_dict[uid][0])>0:
+                return server_pb2.serverResponse(status='FAILED: FILENAME IS WRONG',version="",uid="")
             
             else:
-                data_dict[uid]=[filename,curTime]
+                filename=data_dict[uid][0]
+                
                 file_path = os.path.join('./replica_'+portNo+'/', filename)
                 # if os.path.exists(file_path):
                 if len(filename)>0:
@@ -57,11 +58,12 @@ class Server(server_pb2_grpc.Server_serviceServicer):
                     with open(file_path, 'w') as f:
                         f.write(content)
                         print(f"Updated file '{filename}' and wrote message '{content}' to it")
+                    data_dict[uid]=[filename,curTime]
                     print(f"UID : {uid} Filename : {data_dict[uid][0]} Version : {data_dict[uid][1]}")
                     return server_pb2.serverResponse(status='SUCCESS',version=curTime,uid=uid)
                 
                 else:
-                    return server_pb2.serverResponse(status='FAILURE: DELETED FILE CANNOT BE UPDATED ',version=curTime,uid=uid)
+                    return server_pb2.serverResponse(status='FAILURE: DELETED FILE CANNOT BE UPDATED',version=curTime,uid=uid)
 
             
         else:
@@ -72,7 +74,7 @@ class Server(server_pb2_grpc.Server_serviceServicer):
                     break
 
             if filecheck:
-                return server_pb2.serverResponse(status='FAILED : FILE WITH THE SAME NAME ALREADY EXISTS ',version="",uid="")
+                return server_pb2.serverResponse(status='FAILED : FILE WITH THE SAME NAME ALREADY EXISTS',version="",uid="")
             
             else:
                 file_path = os.path.join('./replica_'+portNo+'/', filename)
@@ -83,6 +85,30 @@ class Server(server_pb2_grpc.Server_serviceServicer):
                 print(f"UID : {uid} Filename : {data_dict[uid][0]} Version : {data_dict[uid][1]}")
                 return server_pb2.serverResponse(status='SUCCESS',version=curTime,uid=uid)
             
+
+    def WriteServerUpdate(self,request,context):
+        curTime= (datetime.datetime.now())
+        curTime = datetime.datetime.strftime(curTime, "%Y-%m-%d %H:%M:%S")
+        uid=request.uid
+        type=request.type
+        filename=data_dict[uid][0]
+        if type=='update':
+            if len(filename)>0:
+                file_path = os.path.join('./replica_'+portNo+'/', filename)
+                os.remove(file_path)
+            data_dict[uid]=["",curTime]
+            return server_pb2.serverResponseupd(status='FAILURE: DELETED FILE CANNOT BE UPDATED',version=curTime,uid=uid)
+        else:
+            if len(filename)>0:
+                file_path = os.path.join('./replica_'+portNo+'/', filename)
+                os.remove(file_path)
+
+            if uid in data_dict:
+                del data_dict[uid]
+
+            return server_pb2.serverResponseupd(status='FAILED : FILE WITH THE SAME NAME ALREADY EXISTS',version=curTime,uid=uid)
+
+
 
     def ReadServer(self,request,context):
         for ke,va in data_dict.items():

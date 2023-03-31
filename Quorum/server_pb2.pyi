@@ -38,6 +38,14 @@ class clientResponseRead(_message.Message):
     uid: str
     def __init__(self, uid: _Optional[str] = ...) -> None: ...
 
+class clientResponseupd(_message.Message):
+    __slots__ = ["type", "uid"]
+    TYPE_FIELD_NUMBER: _ClassVar[int]
+    UID_FIELD_NUMBER: _ClassVar[int]
+    type: str
+    uid: str
+    def __init__(self, uid: _Optional[str] = ..., type: _Optional[str] = ...) -> None: ...
+
 class serverResponse(_message.Message):
     __slots__ = ["status", "uid", "version"]
     STATUS_FIELD_NUMBER: _ClassVar[int]
@@ -65,3 +73,13 @@ class serverResponseRead(_message.Message):
     uid: str
     version: str
     def __init__(self, uid: _Optional[str] = ..., status: _Optional[str] = ..., version: _Optional[str] = ..., content: _Optional[str] = ...) -> None: ...
+
+class serverResponseupd(_message.Message):
+    __slots__ = ["status", "uid", "version"]
+    STATUS_FIELD_NUMBER: _ClassVar[int]
+    UID_FIELD_NUMBER: _ClassVar[int]
+    VERSION_FIELD_NUMBER: _ClassVar[int]
+    status: str
+    uid: str
+    version: str
+    def __init__(self, uid: _Optional[str] = ..., status: _Optional[str] = ..., version: _Optional[str] = ...) -> None: ...

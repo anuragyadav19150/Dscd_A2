@@ -6,6 +6,8 @@ service Server_service{
 
     rpc WriteServer (clientResponse) returns (serverResponse) {}
 
+    rpc WriteServerUpdate (clientResponseupd) returns (serverResponseupd) {}
+
     rpc ReadServer (clientResponseRead) returns (serverResponseRead) {}
 
     rpc DeleteServer (clientResponseDelete) returns (serverResponseDelete) {}
@@ -22,6 +24,18 @@ message serverResponse{
     string status=2;
     string version=3;
 }
+
+message clientResponseupd{
+    string uid=1;
+    string type=2;
+}
+
+message serverResponseupd{
+    string uid=1;
+    string status=2;
+    string version=3;
+}
+
 
 message clientResponseRead{
     string uid=1;

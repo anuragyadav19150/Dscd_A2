@@ -19,6 +19,11 @@ class Server_serviceStub(object):
                 request_serializer=server__pb2.clientResponse.SerializeToString,
                 response_deserializer=server__pb2.serverResponse.FromString,
                 )
+        self.WriteServerUpdate = channel.unary_unary(
+                '/Server_service/WriteServerUpdate',
+                request_serializer=server__pb2.clientResponseupd.SerializeToString,
+                response_deserializer=server__pb2.serverResponseupd.FromString,
+                )
         self.ReadServer = channel.unary_unary(
                 '/Server_service/ReadServer',
                 request_serializer=server__pb2.clientResponseRead.SerializeToString,
@@ -35,6 +40,12 @@ class Server_serviceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def WriteServer(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def WriteServerUpdate(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -59,6 +70,11 @@ def add_Server_serviceServicer_to_server(servicer, server):
                     servicer.WriteServer,
                     request_deserializer=server__pb2.clientResponse.FromString,
                     response_serializer=server__pb2.serverResponse.SerializeToString,
+            ),
+            'WriteServerUpdate': grpc.unary_unary_rpc_method_handler(
+                    servicer.WriteServerUpdate,
+                    request_deserializer=server__pb2.clientResponseupd.FromString,
+                    response_serializer=server__pb2.serverResponseupd.SerializeToString,
             ),
             'ReadServer': grpc.unary_unary_rpc_method_handler(
                     servicer.ReadServer,
@@ -94,6 +110,23 @@ class Server_service(object):
         return grpc.experimental.unary_unary(request, target, '/Server_service/WriteServer',
             server__pb2.clientResponse.SerializeToString,
             server__pb2.serverResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def WriteServerUpdate(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Server_service/WriteServerUpdate',
+            server__pb2.clientResponseupd.SerializeToString,
+            server__pb2.serverResponseupd.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

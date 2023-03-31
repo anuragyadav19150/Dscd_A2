@@ -49,6 +49,8 @@ def getAllServers():
                 success_port=[]
                 failure_port=[]
                 temp_uid=""
+                temp_uid_fail_update=""
+                temp_uid_fail_filename=""
                 for value in response.serverclient:
                     with grpc.insecure_channel('localhost:'+value.port) as channelServer:
                         serverStub = server_pb2_grpc.Server_serviceStub(channelServer)
@@ -61,22 +63,45 @@ def getAllServers():
                         
 
                         if serverResponse.status[0]=='S':
-                            success_port.append(value.port)
+                            success_port.append([serverResponse.uid,value.port])
                             temp_uid=serverResponse.uid
-                        else:
+                        elif serverResponse.status=='FAILURE: DELETED FILE CANNOT BE UPDATED':
+                            temp_uid_fail_update=serverResponse.uid
+                            print(temp_uid_fail_update)
+                            failure_port.append(value.port)
+                        elif serverResponse.status=='FAILED : FILE WITH THE SAME NAME ALREADY EXISTS':
+                            temp_uid_fail_filename=uid
                             failure_port.append(value.port)
 
-                if len(success_port)>0:
-                    if len(failure_port)>0:
-                        print("File was not present in some of the replica so creating the file")
-                    for values in failure_port:
-                        with grpc.insecure_channel('localhost:'+values) as channelServerf:
-                            serverStubf = server_pb2_grpc.Server_serviceStub(channelServerf)
-                            serverResponsef = serverStubf.WriteServer(server_pb2.clientResponse(uid=temp_uid,filename=filename,content=content))
-                            # print("Status : ",serverResponsef.status)
-                            # print("UID : ",serverResponsef.uid)
-                            # print("Version : ",serverResponsef.version)
-                            print(f"Status: {serverResponsef.status}, Uid: {serverResponsef.uid}, Version: {serverResponsef.version}")
+                if len(failure_port)>0:
+                    if len(temp_uid_fail_update)>0:
+                        print(f"File was already Deleted in some Replica so can not update in any")
+                        for values in success_port:
+                            with grpc.insecure_channel('localhost:'+values[1]) as channelServerf:
+                                serverStubf = server_pb2_grpc.Server_serviceStub(channelServerf)
+                                serverResponsef = serverStubf.WriteServerUpdate(server_pb2.clientResponseupd(uid=values[0],type="update"))
+                                print(f"Status: {serverResponsef.status}, Uid: {serverResponsef.uid}, Version: {serverResponsef.version}")
+
+                    if len(temp_uid_fail_filename)>0:
+                        print(f"File with same name already present in some Replicas so deleting the successfull entries")
+                        for values in success_port:
+                            with grpc.insecure_channel('localhost:'+values[1]) as channelServerf:
+                                serverStubf = server_pb2_grpc.Server_serviceStub(channelServerf)
+                                serverResponsef = serverStubf.WriteServerUpdate(server_pb2.clientResponseupd(uid=values[0],type="filename"))
+                                print(f"Status: {serverResponsef.status}, Uid: {serverResponsef.uid}, Version: {serverResponsef.version}")
+
+
+                # if len(success_port)>0:
+                #     if len(failure_port)>0:
+                #         print("File was not present in some of the replica so creating the file")
+                #     for values in failure_port:
+                #         with grpc.insecure_channel('localhost:'+values) as channelServerf:
+                #             serverStubf = server_pb2_grpc.Server_serviceStub(channelServerf)
+                #             serverResponsef = serverStubf.WriteServer(server_pb2.clientResponse(uid=temp_uid,filename=filename,content=content))
+                #             # print("Status : ",serverResponsef.status)
+                #             # print("UID : ",serverResponsef.uid)
+                #             # print("Version : ",serverResponsef.version)
+                #             print(f"Status: {serverResponsef.status}, Uid: {serverResponsef.uid}, Version: {serverResponsef.version}")
 
 
         elif argument==2:

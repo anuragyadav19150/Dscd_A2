@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0cserver.proto\"@\n\x0e\x63lientResponse\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\x10\n\x08\x66ilename\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\t\">\n\x0eserverResponse\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\"!\n\x12\x63lientResponseRead\x12\x0b\n\x03uid\x18\x01 \x01(\t\"S\n\x12serverResponseRead\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x04 \x01(\t\"1\n\x14\x63lientResponseDelete\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\x0c\n\x04work\x18\x02 \x01(\t\"&\n\x14serverResponseDelete\x12\x0e\n\x06status\x18\x01 \x01(\t\"0\n\x06Server\x12\n\n\x02ip\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t2\xbd\x01\n\x0eServer_service\x12\x31\n\x0bWriteServer\x12\x0f.clientResponse\x1a\x0f.serverResponse\"\x00\x12\x38\n\nReadServer\x12\x13.clientResponseRead\x1a\x13.serverResponseRead\"\x00\x12>\n\x0c\x44\x65leteServer\x12\x15.clientResponseDelete\x1a\x15.serverResponseDelete\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0cserver.proto\"@\n\x0e\x63lientResponse\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\x10\n\x08\x66ilename\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\t\">\n\x0eserverResponse\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\".\n\x11\x63lientResponseupd\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\x0c\n\x04type\x18\x02 \x01(\t\"A\n\x11serverResponseupd\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\"!\n\x12\x63lientResponseRead\x12\x0b\n\x03uid\x18\x01 \x01(\t\"S\n\x12serverResponseRead\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x04 \x01(\t\"1\n\x14\x63lientResponseDelete\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\x0c\n\x04work\x18\x02 \x01(\t\"&\n\x14serverResponseDelete\x12\x0e\n\x06status\x18\x01 \x01(\t\"0\n\x06Server\x12\n\n\x02ip\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t2\xfc\x01\n\x0eServer_service\x12\x31\n\x0bWriteServer\x12\x0f.clientResponse\x1a\x0f.serverResponse\"\x00\x12=\n\x11WriteServerUpdate\x12\x12.clientResponseupd\x1a\x12.serverResponseupd\"\x00\x12\x38\n\nReadServer\x12\x13.clientResponseRead\x1a\x13.serverResponseRead\"\x00\x12>\n\x0c\x44\x65leteServer\x12\x15.clientResponseDelete\x1a\x15.serverResponseDelete\"\x00\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'server_pb2', globals())
@@ -24,16 +24,20 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _CLIENTRESPONSE._serialized_end=80
   _SERVERRESPONSE._serialized_start=82
   _SERVERRESPONSE._serialized_end=144
-  _CLIENTRESPONSEREAD._serialized_start=146
-  _CLIENTRESPONSEREAD._serialized_end=179
-  _SERVERRESPONSEREAD._serialized_start=181
-  _SERVERRESPONSEREAD._serialized_end=264
-  _CLIENTRESPONSEDELETE._serialized_start=266
-  _CLIENTRESPONSEDELETE._serialized_end=315
-  _SERVERRESPONSEDELETE._serialized_start=317
-  _SERVERRESPONSEDELETE._serialized_end=355
-  _SERVER._serialized_start=357
-  _SERVER._serialized_end=405
-  _SERVER_SERVICE._serialized_start=408
-  _SERVER_SERVICE._serialized_end=597
+  _CLIENTRESPONSEUPD._serialized_start=146
+  _CLIENTRESPONSEUPD._serialized_end=192
+  _SERVERRESPONSEUPD._serialized_start=194
+  _SERVERRESPONSEUPD._serialized_end=259
+  _CLIENTRESPONSEREAD._serialized_start=261
+  _CLIENTRESPONSEREAD._serialized_end=294
+  _SERVERRESPONSEREAD._serialized_start=296
+  _SERVERRESPONSEREAD._serialized_end=379
+  _CLIENTRESPONSEDELETE._serialized_start=381
+  _CLIENTRESPONSEDELETE._serialized_end=430
+  _SERVERRESPONSEDELETE._serialized_start=432
+  _SERVERRESPONSEDELETE._serialized_end=470
+  _SERVER._serialized_start=472
+  _SERVER._serialized_end=520
+  _SERVER_SERVICE._serialized_start=523
+  _SERVER_SERVICE._serialized_end=775
 # @@protoc_insertion_point(module_scope)
