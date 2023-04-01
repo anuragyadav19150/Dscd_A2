@@ -1,6 +1,0 @@
-syntax = "proto3";
-
-
-message Client{
-    string uuid =1;
-}
