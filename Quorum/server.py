@@ -6,6 +6,7 @@ import server_pb2_grpc
 from concurrent import futures
 import datetime
 import os
+import sys
 
 data_dict={}
 
@@ -98,7 +99,7 @@ class Server(server_pb2_grpc.Server_serviceServicer):
                 os.remove(file_path)
             data_dict[uid]=["",curTime]
             return server_pb2.serverResponseupd(status='FAILURE: DELETED FILE CANNOT BE UPDATED',version=curTime,uid=uid)
-        else:
+        elif type=="filename":
             if len(filename)>0:
                 file_path = os.path.join('./replica_'+portNo+'/', filename)
                 os.remove(file_path)
@@ -107,6 +108,13 @@ class Server(server_pb2_grpc.Server_serviceServicer):
                 del data_dict[uid]
 
             return server_pb2.serverResponseupd(status='FAILED : FILE WITH THE SAME NAME ALREADY EXISTS',version=curTime,uid=uid)
+        
+        elif type=="fileupd":
+            
+
+            data_dict[uid]=["",curTime]
+
+            return server_pb2.serverResponseupd(status='FAILED: FILENAME IS WRONG',version=curTime,uid=uid)
 
 
 
@@ -138,7 +146,7 @@ class Server(server_pb2_grpc.Server_serviceServicer):
                 return server_pb2.serverResponseRead(status='SUCCESS',version=version,uid=uid,content=content)
             
             else:
-                return server_pb2.serverResponseRead(status='FAILED: FILE ALREADY DELETED',version="",uid="",content="")
+                return server_pb2.serverResponseRead(status='FAILED: FILE ALREADY DELETED',version=version,uid="",content="")
             
     def DeleteServer(self,request,context):
         for ke,va in data_dict.items():
@@ -219,8 +227,19 @@ def regiterToRegistryServer():
         
 
 if __name__ == '__main__':
-    name =input("Enter name of the server : ")
-    portNo = input("Enter Port no : ")
+    index=1
+    
+    print("Enter name of the server : ",end="")
+    name =sys.argv[index]
+    index+=1
+    print(name)
+
+    print("Enter Port no : ",end="")
+    portNo =sys.argv[index]
+    index+=1
+    print(portNo)
+
+   
     
     serverr = server_pb2.Server()
     # name=portNo

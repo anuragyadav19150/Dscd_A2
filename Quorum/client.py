@@ -6,18 +6,26 @@ import server_pb2_grpc
 from concurrent import futures
 import uuid
 from datetime import datetime
+import sys 
+import os
 
 def getAllServers():
     # print("Generating uuid for a client")
-   
+    index=1
 
     while True:
+        print()
         print("1. Write")
         print("2. Read ")
         print("3. Delete")
-        print("4. Exit")
+        print("4. All Replica")
+        print("5. Exit")
 
-        argument=int(input("Choose one of the above options : "))
+        print()
+        print("Choose one of the above options : ",end="")
+        argument=int(sys.argv[index])
+        index+=1
+        print(argument)
 
         if argument==1:
             print("Inside write server List")
@@ -36,21 +44,35 @@ def getAllServers():
                     print(". "+value.name + " - "+ value.ip+":"+value.port)
                     i+=1
 
+                print("Enter UID : ",end="")
 
-                uid=input("Enter UID : ")
+                uid=sys.argv[index]
+                index+=1
+                print(uid)
                 # updatevalue=int(input("Do you want to update or write , for update press 1 and write press 2 : "))
 
                 # if updatevalue==2:
                 #     uid=str(uuid.uuid1())
 
-                filename=input("Enter the name of file : ")
-                content=input("Enter content of file : ")
+                print("Enter the name of file : ",end="")
+
+                filename=sys.argv[index]
+                index+=1
+                print(filename)
+
+                print("Enter content of file : ",end="")
+
+                content=sys.argv[index]
+                index+=1
+                print(content)
+
 
                 success_port=[]
                 failure_port=[]
                 temp_uid=""
                 temp_uid_fail_update=""
                 temp_uid_fail_filename=""
+                temp_uid_fail_fileupd=""
                 for value in response.serverclient:
                     with grpc.insecure_channel('localhost:'+value.port) as channelServer:
                         serverStub = server_pb2_grpc.Server_serviceStub(channelServer)
@@ -72,10 +94,14 @@ def getAllServers():
                         elif serverResponse.status=='FAILED : FILE WITH THE SAME NAME ALREADY EXISTS':
                             temp_uid_fail_filename=uid
                             failure_port.append(value.port)
+                        elif serverResponse.status=='FAILED: FILENAME IS WRONG':
+                            temp_uid_fail_fileupd=uid
+                            failure_port.append(value.port)
 
                 if len(failure_port)>0:
                     if len(temp_uid_fail_update)>0:
-                        print(f"File was already Deleted in some Replica so can not update in any")
+                        if len(success_port)>0:
+                            print(f"File was already Deleted in some Replica so can not update in any")
                         for values in success_port:
                             with grpc.insecure_channel('localhost:'+values[1]) as channelServerf:
                                 serverStubf = server_pb2_grpc.Server_serviceStub(channelServerf)
@@ -83,25 +109,25 @@ def getAllServers():
                                 print(f"Status: {serverResponsef.status}, Uid: {serverResponsef.uid}, Version: {serverResponsef.version}")
 
                     if len(temp_uid_fail_filename)>0:
-                        print(f"File with same name already present in some Replicas so deleting the successfull entries")
+                        if len(success_port)>0:
+                            print(f"File with same name already present in some Replicas so deleting the successfull entries")
                         for values in success_port:
                             with grpc.insecure_channel('localhost:'+values[1]) as channelServerf:
                                 serverStubf = server_pb2_grpc.Server_serviceStub(channelServerf)
                                 serverResponsef = serverStubf.WriteServerUpdate(server_pb2.clientResponseupd(uid=values[0],type="filename"))
                                 print(f"Status: {serverResponsef.status}, Uid: {serverResponsef.uid}, Version: {serverResponsef.version}")
 
+                    if len(temp_uid_fail_fileupd)>0:
+                        if len(success_port)>0:
+                            print(f"File with same UID already present in some Replicas so deleting the successfull entries")
+                        for values in success_port:
+                            with grpc.insecure_channel('localhost:'+values[1]) as channelServerf:
+                                serverStubf = server_pb2_grpc.Server_serviceStub(channelServerf)
+                                serverResponsef = serverStubf.WriteServerUpdate(server_pb2.clientResponseupd(uid=values[0],type="fileupd"))
+                                print(f"Status: {serverResponsef.status}, Uid: {serverResponsef.uid}, Version: {serverResponsef.version}")
 
-                # if len(success_port)>0:
-                #     if len(failure_port)>0:
-                #         print("File was not present in some of the replica so creating the file")
-                #     for values in failure_port:
-                #         with grpc.insecure_channel('localhost:'+values) as channelServerf:
-                #             serverStubf = server_pb2_grpc.Server_serviceStub(channelServerf)
-                #             serverResponsef = serverStubf.WriteServer(server_pb2.clientResponse(uid=temp_uid,filename=filename,content=content))
-                #             # print("Status : ",serverResponsef.status)
-                #             # print("UID : ",serverResponsef.uid)
-                #             # print("Version : ",serverResponsef.version)
-                #             print(f"Status: {serverResponsef.status}, Uid: {serverResponsef.uid}, Version: {serverResponsef.version}")
+
+             
 
 
         elif argument==2:
@@ -111,13 +137,7 @@ def getAllServers():
                 stub = registry_pb2_grpc.RegisterStub(channel)
                 response = stub.GetServerList(registry_pb2.ClientRequest(client='read'))
         
-                # print(response.serverclient)
-                # print(type(response))
-
-                # data={}
-
-                # for values in response.serverclient:
-                #     print(values.ip," hiii")
+             
 
                 print("List of Read Quorums (N_r) : ")
                 i=0
@@ -127,7 +147,13 @@ def getAllServers():
                     i+=1
 
 
-                uid=input("Enter UID : ")
+                print("Enter UID : ",end="")
+
+                uid=sys.argv[index]
+                index+=1
+                print(uid)
+
+                # uid=input("Enter UID : ")
 
                 latest_data={"Version":"","Status":"","UID":"","Content":""}
 
@@ -136,10 +162,7 @@ def getAllServers():
                     with grpc.insecure_channel('localhost:'+value.port) as channelServerRead:
                         serverStubr = server_pb2_grpc.Server_serviceStub(channelServerRead)
                         serverResponseR = serverStubr.ReadServer(server_pb2.clientResponseRead(uid=uid))
-                        # print("Status : ",serverResponseR.status)
-                        # print("UID : ",serverResponseR.uid)
-                        # print("Version : ",serverResponseR.version)
-                        # print("Content : ",serverResponseR.content)
+                       
                         if len(latest_data['Version'])==0:
                             latest_data['Version']=serverResponseR.version
                             latest_data['Status']=serverResponseR.status
@@ -176,7 +199,11 @@ def getAllServers():
                     print(". "+value.name + " - "+ value.ip+":"+value.port)
                     i+=1
 
-                uid=input("Enter UID : ")
+                print("Enter UID : ",end="")
+
+                uid=sys.argv[index]
+                index+=1
+                print(uid)
                 success_port=[]
                 failure_port=[]
                 status=""
@@ -207,7 +234,21 @@ def getAllServers():
                                 print(f"UID : {uid} file delete status : {status}")
 
 
-
+        elif argument==4:
+            print("Inside All server List")
+            with grpc.insecure_channel('localhost:50051') as channel:
+                print("connect to registry server")
+                stub = registry_pb2_grpc.RegisterStub(channel)
+                response = stub.GetServerList(registry_pb2.ClientRequest(client='all'))
+        
+                # print(response)
+               
+                print("List of All Replicas (N) : ")
+                i=0
+                for value in response.serverclient:
+                    print(i+1,end=" ")
+                    print(". "+value.name + " - "+ value.ip+":"+value.port)
+                    i+=1
 
         else:
             break

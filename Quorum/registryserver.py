@@ -4,6 +4,7 @@ import registry_pb2_grpc
 import random
 from concurrent import futures
 import os
+import sys
 
 class RegisterServer(registry_pb2_grpc.RegisterServicer):
 
@@ -145,7 +146,7 @@ class RegisterServer(registry_pb2_grpc.RegisterServicer):
             # print(client_server.serverclient)
             return registry_pb2.ClientResponse(serverclient=client_server.serverclient)
 
-        else:
+        elif request.client=='all':
             print('All Server List Request (N server list)')
             client_server=registry_pb2.ClientResponse()
             for i in range(len(registry_server.servers)):
@@ -179,10 +180,23 @@ if __name__ == '__main__':
     Nw=0
     N=0
     check=True
+    index=1
+    # choice = int(sys.argv[arg_index])
+        # arg_index+=1
+    print(sys.argv[1:])
     while check:
-        N = int(input("No. of Replicas :- "))
-        Nr = int(input("No. of Read Quorum :- "))
-        Nw = int(input("No. of Write Quorum :- "))
+        print("No. of Replicas :- ",end="")
+        N = int(sys.argv[index])
+        index+=1
+        print(N)
+        print("No. of Read Quorum :- ",end="")
+        Nr = int(sys.argv[index])
+        index+=1
+        print(Nr)
+        print("No. of Write Quorum :- ",end="")
+        Nw = int(sys.argv[index])
+        index+=1
+        print(Nw)
 
         if Nw > N/2 and Nr > (N-Nw) :
             check=False
