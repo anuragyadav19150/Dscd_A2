@@ -97,7 +97,8 @@ class Server(server_pb2_grpc.Server_serviceServicer):
             if len(filename)>0:
                 file_path = os.path.join('./replica_'+portNo+'/', filename)
                 os.remove(file_path)
-            data_dict[uid]=["",curTime]
+            if uid in data_dict:
+                del data_dict[uid]
             return server_pb2.serverResponseupd(status='FAILURE: DELETED FILE CANNOT BE UPDATED',version=curTime,uid=uid)
         elif type=="filename":
             if len(filename)>0:
@@ -110,9 +111,13 @@ class Server(server_pb2_grpc.Server_serviceServicer):
             return server_pb2.serverResponseupd(status='FAILED : FILE WITH THE SAME NAME ALREADY EXISTS',version=curTime,uid=uid)
         
         elif type=="fileupd":
+            if len(filename)>0:
+                file_path = os.path.join('./replica_'+portNo+'/', filename)
+                os.remove(file_path)
             
 
-            data_dict[uid]=["",curTime]
+            if uid in data_dict:
+                del data_dict[uid]
 
             return server_pb2.serverResponseupd(status='FAILED: FILENAME IS WRONG',version=curTime,uid=uid)
 

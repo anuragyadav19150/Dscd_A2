@@ -183,7 +183,7 @@ if __name__ == '__main__':
     index=1
     # choice = int(sys.argv[arg_index])
         # arg_index+=1
-    print(sys.argv[1:])
+    # print(sys.argv[1:])
     while check:
         print("No. of Replicas :- ",end="")
         N = int(sys.argv[index])
